@@ -1,0 +1,36 @@
+[
+  {
+    "component": "package-info",
+    "componentPrimaryName": "package-info",
+    "templateID": 804401,
+    "entities": [
+      {
+        "word": "compare react and vue",
+        "wgID": 104401,
+        "wgName": "EXPRESSION",
+        "templateID": 804401,
+        "entityInfo": null,
+        "componentName": "package-info",
+        "entityType": "EXPRESSION",
+        "sourceID": "word",
+        "description": "expression",
+        "priority": 5,
+        "isEnabled": 1,
+        "keywordRequired": 0,
+        "primaryText": "NA",
+        "relevanceScore": 90,
+        "sourceValue": 0,
+        "index": 0,
+        "primaryID": "word"
+      }
+    ],
+    "query": "compare react and vue",
+    "componentEnabled": true,
+    "keyword": ["compare", "vs", "react", "vue", "npm"],
+    "disambiguationType": 1,
+    "time": "2026-10-26T06:35:09.737Z",
+    "quickView": 3,
+    "queryRegex": ".*",
+    "componentType": "internal"
+  }
+]

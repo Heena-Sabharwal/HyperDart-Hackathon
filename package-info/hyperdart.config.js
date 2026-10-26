@@ -60,5 +60,5 @@ export default {
   info: {},
 
   github: 'https://github.com/Heena-Sabharwal/HyperDart-Hackathon',
-  demovideo: 'https://youtu.be/KfunHNVF02I'
+  demovideo: 'https://youtu.be/QiHUYv7twB8'
 }

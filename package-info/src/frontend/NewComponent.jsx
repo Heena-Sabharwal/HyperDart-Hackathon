@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getEmbedding } from "./semanticSimilarity.js";
 import {
   Box,
   Chip,
@@ -348,38 +347,7 @@ function NewComponent(props) {
       throw new Error(`No npm packages found for use-case "${userQuery}".`);
     }
 
-    const queryEmbedding = await getEmbedding(`Goal: ${userQuery}. JavaScript library package.`);
-
-    const semanticSettled = await Promise.allSettled(
-      candidatePool.map(async (candidate) => {
-        const candidateText = [
-          `Package name: ${candidate.name}.`,
-          candidate.description,
-          `Topics: ${(Array.isArray(candidate.keywords) ? candidate.keywords : []).join(", ")}.`,
-        ]
-          .filter(Boolean)
-          .join(" ");
-
-        const candidateEmbedding = await getEmbedding(candidateText);
-        let semanticScore = 0;
-
-        for (let i = 0; i < queryEmbedding.length; i++) {
-          semanticScore += queryEmbedding[i] * candidateEmbedding[i];
-        }
-
-        return {
-          ...candidate,
-          semanticScore,
-          relevanceScore: semanticScore * 100 + candidate.searchScore * 5,
-        };
-      })
-    );
-
-    const rankedCandidates = semanticSettled
-      .filter((res) => res.status === "fulfilled")
-      .map((res) => res.value)
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
-      .slice(0, 4);
+    const rankedCandidates = candidatePool.slice(0, 4);
 
     const enrichedSettled = await Promise.allSettled(
       rankedCandidates.map(async (candidate) => {
@@ -446,13 +414,6 @@ function NewComponent(props) {
     }
 
     const originalName = (original.name || packageName).toLowerCase();
-    const originalText = [
-      `Purpose of package ${original.name || packageName}.`,
-      original.description,
-      `Package topics: ${(Array.isArray(original.keywords) ? original.keywords : []).join(", ")}.`,
-    ]
-      .filter(Boolean)
-      .join(" ");
 
     const candidatePool = [...candidateMap.values()]
       .filter((pkg) => pkg.name.toLowerCase() !== originalName)
@@ -461,25 +422,8 @@ function NewComponent(props) {
 
     if (candidatePool.length === 0) return [];
 
-    const originalEmbedding = await getEmbedding(originalText);
-
-    const semanticSettled = await Promise.allSettled(
-      candidatePool.map(async (candidate) => {
-        const candidateText = [
-          `Purpose of package ${candidate.name}.`,
-          candidate.description,
-          `Package topics: ${(Array.isArray(candidate.keywords) ? candidate.keywords : []).join(", ")}.`,
-        ]
-          .filter(Boolean)
-          .join(" ");
-
-        const candidateEmbedding = await getEmbedding(candidateText);
-        let semanticScore = 0;
-
-        for (let i = 0; i < originalEmbedding.length; i++) {
-          semanticScore += originalEmbedding[i] * candidateEmbedding[i];
-        }
-
+    const rankedCandidates = candidatePool
+      .map((candidate) => {
         const lexicalScore = calculateRelevance(
           original,
           candidate,
@@ -496,26 +440,13 @@ function NewComponent(props) {
 
         return {
           ...candidate,
-          semanticScore,
           relevanceScore:
-            semanticScore * 100 +
             Math.min(lexicalScore, 10) * 0.5 +
             candidate.searchScore * 2 -
             (looksLikeForkOrMiniVariant ? 12 : 0),
         };
       })
-    );
-
-    const rankedCandidates = semanticSettled
-      .filter((result) => result.status === "fulfilled")
-      .map((result) => result.value)
       .sort((a, b) => b.relevanceScore - a.relevanceScore);
-
-    if (rankedCandidates.length === 0) {
-      throw new Error(
-        "Could not calculate semantic similarity. Check your connection and try again."
-      );
-    }
 
     const shortlist = rankedCandidates.slice(0, 15);
 

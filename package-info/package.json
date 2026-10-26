@@ -1,5 +1,5 @@
 {
-  "name": "package-info",
+  "name": "@heena1969/packageinfo",
   "version": "1.0.0",
   "source": "src/frontend/index.jsx",
   "main": "dist/index.umd.js",

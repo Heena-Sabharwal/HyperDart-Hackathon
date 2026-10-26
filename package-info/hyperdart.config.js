@@ -27,7 +27,8 @@ export default {
       'best npm package',
       'best npm library',
       'best npm framework',
-      'best npm tool'
+      'best npm tool',
+      'moment'
     ]
   },
 
@@ -58,6 +59,6 @@ export default {
 
   info: {},
 
-  github: '',
-  demovideo: ''
+  github: 'https://github.com/Heena-Sabharwal/HyperDart-Hackathon',
+  demovideo: 'https://youtu.be/KfunHNVF02I'
 }
